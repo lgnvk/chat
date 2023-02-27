@@ -142,13 +142,13 @@
       this[globalName] = mainExports;
     }
   }
-})({"jC2qd":[function(require,module,exports) {
+})({"csMoI":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
-module.bundle.HMR_BUNDLE_ID = "890e741a975ef6c8";
+module.bundle.HMR_BUNDLE_ID = "921bf107609f6d2c";
 "use strict";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
@@ -556,50 +556,57 @@ function hmrAccept(bundle, id) {
     });
 }
 
-},{}],"8lqZg":[function(require,module,exports) {
-var _sum = require("./modules/sum");
-const root = document.querySelector("#root");
-root.textContent = (0, _sum.sum)(6, 2, 2).toString();
-
-},{"./modules/sum":"88j4g"}],"88j4g":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "sum", ()=>sum);
-function sum(...args) {
-    if (args.length === 0) throw Error("sum requiered at least 1 argument");
-    return args.reduce((acc, val)=>acc + val, 0);
+},{}],"lxd7M":[function(require,module,exports) {
+function get(obj, path, defaultValue) {
+    const keys = path.split(".");
+    let result = obj;
+    for (let key of keys){
+        result = result[key];
+        if (result === undefined) return defaultValue;
+    }
+    return result ?? defaultValue;
 }
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
+let testTempl = `
+<div>
+    {{ field1 }}
+    <span>{{field2}}</span>
+    <span>{{ field3.info.name }}</span>
+</div>
+`;
+const ctx = {
+    field1: "text1",
+    field2: "text2",
+    field3: {
+        info: {
+            name: "some Name"
+        }
+    }
+};
+class Templator {
+    TEMPLATE_REGEXP = /\{\{(.*?)\}\}/gi;
+    constructor(template){
+        this._template = template;
+    }
+    compile(ctx) {
+        return this._compileTemplate(ctx);
+    }
+    _compileTemplate = (ctx)=>{
+        let tmpl = this._template;
+        let key = null;
+        const regExp = this.TEMPLATE_REGEXP;
+        while(key = regExp.exec(tmpl))if (key[1]) {
+            const tmplValue = key[1].trim();
+            const data = get(ctx, tmplValue);
+            tmpl = tmpl.replace(new RegExp(key[0], "gi"), data);
+        }
+        return tmpl;
     };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, "__esModule", {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
+}
+const comp = new Templator(testTempl);
+const res = comp.compile(ctx);
+const root = document.querySelector("#root");
+root.innerHTML = res;
 
-},{}]},["jC2qd","8lqZg"], "8lqZg", "parcelRequire0d41")
+},{}]},["csMoI","lxd7M"], "lxd7M", "parcelRequire0d41")
 
-//# sourceMappingURL=index.975ef6c8.js.map
+//# sourceMappingURL=index.609f6d2c.js.map
