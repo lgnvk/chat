@@ -1,0 +1,1 @@
+{"mappings":"AAAA","sources":["src/pages/Login/Login.css"],"sourcesContent":[".container {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n}\n"],"names":[],"version":3,"file":"index.9a407b69.css.map","sourceRoot":"/__parcel_source_root/"}
