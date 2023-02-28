@@ -557,7 +557,7 @@ function hmrAccept(bundle, id) {
 }
 
 },{}],"lxd7M":[function(require,module,exports) {
-function get(obj, path, defaultValue) {
+window.get = function get(obj, path, defaultValue) {
     const keys = path.split(".");
     let result = obj;
     for (let key of keys){
@@ -565,7 +565,7 @@ function get(obj, path, defaultValue) {
         if (result === undefined) return defaultValue;
     }
     return result ?? defaultValue;
-}
+};
 let testTempl = `
 <div>
     {{ field1 }}
@@ -596,7 +596,12 @@ class Templator {
         const regExp = this.TEMPLATE_REGEXP;
         while(key = regExp.exec(tmpl))if (key[1]) {
             const tmplValue = key[1].trim();
-            const data = get(ctx, tmplValue);
+            const data = window.get(ctx, tmplValue);
+            if (typeof data === "function") {
+                window.tmplValue = data;
+                tmpl = tmpl.replace(new regExp(key[0], "gi"), `window.${key[1].trim()}()`);
+                continue;
+            }
             tmpl = tmpl.replace(new RegExp(key[0], "gi"), data);
         }
         return tmpl;

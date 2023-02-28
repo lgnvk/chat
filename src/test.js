@@ -1,4 +1,4 @@
-function get(obj, path, defaultValue) {
+window.get = function get(obj, path, defaultValue) {
     const keys = path.split('.');
 
     let result = obj;
@@ -51,7 +51,14 @@ class Templator {
         while ((key = regExp.exec(tmpl))) {
             if(key[1]) {
                 const tmplValue = key[1].trim();
-                const data = get(ctx, tmplValue);
+                const data = window.get(ctx, tmplValue);
+
+                if (typeof data === 'function') {
+                    window.tmplValue = data;
+                    tmpl = tmpl.replace(new regExp(key[0], 'gi'), 
+                    `window.${key[1].trim()}()`);
+                    continue;
+                };
                 tmpl = tmpl.replace(new RegExp(key[0], 'gi'), data);
             }
         }
