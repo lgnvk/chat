@@ -15,24 +15,6 @@ function get(obj, path, defaultValue) {
   return result ?? defaultValue
 }
 
-const testTempl = `
-<div>
-    {{ field1 }}
-    <span>{{field2}}</span>
-    <span>{{ field3.info.name }}</span>
-</div>
-`
-
-const ctx = {
-  field1: 'text1',
-  field2: 'text2',
-  field3: {
-    info: {
-      name: 'some Name',
-    },
-  },
-}
-
 class Templator {
   TEMPLATE_REGEXP = /\{\{(.*?)\}\}/gi
 
@@ -61,9 +43,4 @@ class Templator {
   }
 }
 
-const comp = new Templator(testTempl)
-
-const res = comp.compile(ctx)
-
-const root = document.querySelector('#root')
-root.innerHTML = res
+export default Templator;

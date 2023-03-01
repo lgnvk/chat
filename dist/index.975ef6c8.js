@@ -142,13 +142,13 @@
       this[globalName] = mainExports;
     }
   }
-})({"csMoI":[function(require,module,exports) {
+})({"jC2qd":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
-module.bundle.HMR_BUNDLE_ID = "921bf107609f6d2c";
+module.bundle.HMR_BUNDLE_ID = "890e741a975ef6c8";
 "use strict";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
@@ -556,62 +556,129 @@ function hmrAccept(bundle, id) {
     });
 }
 
-},{}],"lxd7M":[function(require,module,exports) {
+},{}],"8lqZg":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+var _button = require("./components/button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _renderDOM = require("./utils/renderDOM");
+const button = new (0, _buttonDefault.default)({
+    className: "my-class",
+    child: "Click me"
+});
+(0, _renderDOM.render)("#root", button);
+setTimeout(()=>{
+    button.setProps({
+        className: "otherClass",
+        child: "Click me, please"
+    });
+}, 1000);
+
+},{"./components/button":"f08eE","./utils/renderDOM":"g6kCL","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"f08eE":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-function get(obj, path, defaultValue) {
-    const keys = path.split(".");
-    let result = obj;
-    // eslint-disable-next-line no-restricted-syntax
-    for (const key of keys){
-        result = result[key];
-        if (result === undefined) return defaultValue;
-    }
-    return result ?? defaultValue;
-}
-const testTempl = `
-<div>
-    {{ field1 }}
-    <span>{{field2}}</span>
-    <span>{{ field3.info.name }}</span>
-</div>
-`;
-const ctx = {
-    field1: "text1",
-    field2: "text2",
-    field3: {
-        info: {
-            name: "some Name"
-        }
-    }
-};
-class Templator {
-    TEMPLATE_REGEXP = /\{\{(.*?)\}\}/gi;
-    constructor(template){
-        this._template = template;
-    }
-    compile(context) {
-        return this._compileTemplate(context);
-    }
-    _compileTemplate = (ctx)=>{
-        let tmpl = this._template;
-        let key = null;
-        const regExp = this.TEMPLATE_REGEXP;
-        while(key = regExp.exec(tmpl))if (key[1]) {
-            const tmplValue = key[1].trim();
-            const data = get(ctx, tmplValue);
-            tmpl = tmpl.replace(new RegExp(key[0], "gi"), data);
-        }
-        return tmpl;
-    };
-}
-const comp = new Templator(testTempl);
-const res = comp.compile(ctx);
-const root = document.querySelector("#root");
-root.innerHTML = res;
-exports.default = Templator;
+var _button = require("./Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+exports.default = (0, _buttonDefault.default);
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
+},{"./Button":"9QfVD","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"9QfVD":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _block = require("../../Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _test = require("../../test");
+var _testDefault = parcelHelpers.interopDefault(_test);
+var _template = require("./template");
+class Button extends (0, _blockDefault.default) {
+    constructor(props){
+        super("button", props);
+    }
+    render() {
+        return new (0, _testDefault.default)((0, _template.template)).compile(this.props);
+    }
+}
+exports.default = Button;
+
+},{"../../Block":"aTSUd","../../test":"lxd7M","./template":"5J0DB","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"aTSUd":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _eventBus = require("./EventBus");
+var _eventBusDefault = parcelHelpers.interopDefault(_eventBus);
+// Нельзя создавать экземпляр данного класса
+class Block {
+    static EVENTS = {
+        INIT: "init",
+        FLOW_CDM: "flow:component-did-mount",
+        FLOW_RENDER: "flow:render"
+    };
+    _element = null;
+    _meta = null;
+    constructor(tagName = "div", props = {}){
+        const eventBus = new (0, _eventBusDefault.default)();
+        this._meta = {
+            tagName,
+            props
+        };
+        this.props = this._makePropsProxy(props);
+        this.eventBus = ()=>eventBus;
+        this._registerEvents(eventBus);
+        eventBus.emit(Block.EVENTS.INIT);
+    }
+    _registerEvents(eventBus) {
+        eventBus.on(Block.EVENTS.INIT, this.init.bind(this));
+        eventBus.on(Block.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
+        eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
+    }
+    _createResources() {
+        const { tagName  } = this._meta;
+        this._element = this._createDocumentElement(tagName);
+    }
+    init() {
+        this._createResources();
+        this.eventBus().emit(Block.EVENTS.FLOW_RENDER);
+    }
+    _componentDidMount() {
+        this.componentDidMount();
+    }
+    componentDidMount(oldProps) {}
+    dispatchComponentDidMount() {
+        this.eventBus().emit(Block.EVENTS.FLOW_CDM);
+    }
+    _componentDidUpdate(oldProps, newProps) {}
+    componentDidUpdate(oldProps, newProps) {
+        return true;
+    }
+    setProps = (nextProps)=>{
+        if (!nextProps) return;
+        Object.assign(this.props, nextProps);
+    };
+    get element() {
+        return this._element;
+    }
+    _render() {
+        const block = this.render();
+        this._element.innerHTML = block;
+    }
+    render() {}
+    getContent() {
+        return this.element;
+    }
+    _makePropsProxy(props) {
+        const self = this;
+        return props;
+    }
+    _createDocumentElement(tagName) {
+        return document.createElement(tagName);
+    }
+    show() {
+        this.getContent().style.display = "block";
+    }
+    hide() {
+        this.getContent().style.display = "none";
+    }
+}
+exports.default = Block;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./EventBus":"cDa2W"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -641,6 +708,97 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}]},["csMoI","lxd7M"], "lxd7M", "parcelRequire0d41")
+},{}],"cDa2W":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+class EventBus {
+    constructor(){
+        this.listeners = {};
+    }
+    on(event, callback) {
+        if (!this.listeners[event]) this.listeners[event] = [];
+        this.listeners[event].push(callback);
+    }
+    emit(event) {
+        this.listeners[event].forEach(function(listener) {
+            listener();
+        });
+    }
+    off(event, callback) {}
+}
+// const data = {
+//     test: 1,
+// }
+// const proxyData = new Proxy(data, {
+//     get(target, prop) {
+//         const value = target[prop];
+//         console.log('get data', value);
+//         return typeof value === 'function' ? value.bind(target) : value;
+//     },
+//     set(target, prop, value) {
+//         target[prop] = value;
+//         console.log(`${prop}: ${value}`);
+//         return true;
+//     }
+// })
+exports.default = EventBus;
 
-//# sourceMappingURL=index.609f6d2c.js.map
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lxd7M":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+function get(obj, path, defaultValue) {
+    const keys = path.split(".");
+    let result = obj;
+    // eslint-disable-next-line no-restricted-syntax
+    for (const key of keys){
+        result = result[key];
+        if (result === undefined) return defaultValue;
+    }
+    return result ?? defaultValue;
+}
+class Templator {
+    TEMPLATE_REGEXP = /\{\{(.*?)\}\}/gi;
+    constructor(template){
+        this._template = template;
+    }
+    compile(context) {
+        return this._compileTemplate(context);
+    }
+    _compileTemplate = (ctx)=>{
+        let tmpl = this._template;
+        let key = null;
+        const regExp = this.TEMPLATE_REGEXP;
+        while(key = regExp.exec(tmpl))if (key[1]) {
+            const tmplValue = key[1].trim();
+            const data = get(ctx, tmplValue);
+            tmpl = tmpl.replace(new RegExp(key[0], "gi"), data);
+        }
+        return tmpl;
+    };
+}
+exports.default = Templator;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5J0DB":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "template", ()=>template);
+const template = `
+<div class="{{ className }}">
+    {{ child }}
+</div>
+`;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"g6kCL":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "render", ()=>render);
+function render(query, block) {
+    const root = document.querySelector(query);
+    root.appendChild(block.getContent());
+    block.dispatchComponentDidMount();
+    return root;
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["jC2qd","8lqZg"], "8lqZg", "parcelRequire0d41")
+
+//# sourceMappingURL=index.975ef6c8.js.map
